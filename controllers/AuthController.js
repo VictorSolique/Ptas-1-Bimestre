@@ -2,11 +2,12 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const bcryptjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 class AuthController{
 
     static async cadastro(req, res){
-        const { nome, email, password, tipo } = req.body;
+        const { nome, email, password } = req.body;
 
         if(!nome || nome.length < 6){
             return res.json({
@@ -43,14 +44,14 @@ class AuthController{
         }
 
         const salt = bcryptjs.genSaltSync(8);
-        const hashPassword = bcryptjs.hashSync(password, salt);
+        const hashedPassword = bcryptjs.hashSync(password, salt);
 
         try {
             const usuario = await prisma.usuario.create({
                 data: {
                     nome: nome,
                     email: email,
-                    password: hashPassword,
+                    password: hashedPassword,
                     tipo: "cliente",
                 }
             });
@@ -73,7 +74,31 @@ class AuthController{
 
     static async login(req, res){
 
-        
+        const {email, password} = req.body;
+
+        const usuario = await prisma.usuario.findUnique;
+
+
+
+        const senhaCorreta = bcryptjs.compareSync(password, usuario.password)
+
+        if(!senhaCorreta){
+            return res.json({
+                erro: true.
+                mensagem: "Senha incorreta",
+            });
+        }
+
+        const token = jwt.sign({id: usuario.id}, "1234567890", {
+            expiresIn: "1h
+        });
+
+        res.json({
+            erro: false,
+            mensagem: "Autenticado com sucesso!",
+            token: token,
+        })
+
     }
 
 }
