@@ -2,10 +2,12 @@ const prisma = require("../prisma/prismaClient");
 
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 class AuthController{
 
     static async cadastro(req, res){
+        const { nome, email, password } = req.body;
         const { nome, email, password } = req.body;
 
         if(!nome || nome.length < 6){
@@ -43,14 +45,14 @@ class AuthController{
         }
 
         const salt = bcryptjs.genSaltSync(8);
-        const hashPassword = bcryptjs.hashSync(password, salt);
+        const hashedPassword = bcryptjs.hashSync(password, salt);
 
         try {
             const usuario = await prisma.usuario.create({
                 data: {
                     nome: nome,
                     email: email,
-                    password: hashPassword,
+                    password: hashedPassword,
                     tipo: "cliente",
                 }
             });
