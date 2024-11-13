@@ -4,3 +4,4 @@ prisma/banco.db
 prisma/migrations
 
 showUsers.js
+banco.db
