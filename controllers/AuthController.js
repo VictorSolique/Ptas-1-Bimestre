@@ -85,6 +85,25 @@ class AuthController{
             where: {
                 email: email
             }
+
+            static async verificaAutenticacao(req, res, next){
+                const authHeader = req.headers["authorization"];
+
+                const token = authHeader && authHeader.split("")[1];
+
+                if(!token){
+                    return res.status(442).json({message: "Token não encontrado."});
+                }
+                jwt.verify(token, process.env.SECRET_KEY, (err, payload)=>{
+                    if(err){
+                        return res.status(401).json({msg:"Token Inválido."});
+                    }
+
+                    req.usuarioId = payload.id;
+                    next();
+                    expiresIn:"1h",
+                });
+            }
         });
 
         if(!usuario){
