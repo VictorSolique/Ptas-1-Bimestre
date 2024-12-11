@@ -100,8 +100,7 @@ class AuthController{
                     }
 
                     req.usuarioId = payload.id;
-                    next();
-                    expiresIn:"1h",
+                    next(); 
                 });
             }
         });

@@ -15,7 +15,8 @@ app.use(express.json())
 const authRouters = require("./routes/authRoutes");
 app.use("/auth", authRouters);
 
-app.use("/perfil", AuthController.verificaAutenticacao, perfilRoutes);
+const profileRoutes = require("./routes/profileRoutes");
+app.use("/perfil", AuthController.verificaAutenticacao, profileRoutes);
 
 app.get("/privado", AuthController.verificaAutenticacao, (req, res) => {
     
