@@ -16,13 +16,16 @@ class PerfilController {
 
     static async atualizarPerfil(req, res) {
         const { nome, email } = req.body;
-
+        
         const existe = await prisma.usuario.count({
             where: {
                 email: email,
+                id: { not: req.usuarioId },
             }
-        })
+        });
+        console.log(nome, email, existe);
 
+        // Verificar se o email está igual a outro email
         if (existe != 0) {
             return res.status(422).json({
                 erro: true,
@@ -31,7 +34,7 @@ class PerfilController {
         }
 
         try {
-            prisma.usuario.update({
+            const updatePerfil = await prisma.usuario.update({
                 where: {
                     id: req.usuarioId
                 },
@@ -40,6 +43,9 @@ class PerfilController {
                     nome: nome,
                 }
             })
+
+            console.log(JSON.stringify(updatePerfil));
+            
 
             return res.status(201).json({
                 erro: false,

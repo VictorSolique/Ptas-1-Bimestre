@@ -128,7 +128,7 @@ class AuthController {
 
         jwt.verify(token, process.env.SECRET_KEY, (err, payload) => {
             if (err) {
-                return res.status(401).json({ msg: "Token Inválido!" });
+                return res.status(401).json({ mensagem: "Token Inválido!" });
             }
 
             req.usuarioId = payload.id;

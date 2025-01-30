@@ -1,13 +1,20 @@
-const { log } = require("console");
 const prisma = require("../prisma/prismaClient");
 
 class ReservaController {
     static async registrarReserva(req, res) {
-        const { mesaId, n_pessoas } = req.body;
+        const { mesa_id, n_pessoas } = req.body;
         const data = new Date(req.body.data);
 
+        // Verificar se o ID da mesa foi fornecido
+    if (!mesa_id) {
+        return res.status(400).json({
+            erro: true,
+            mensagem: "ID da mesa não fornecido."
+        });
+    }
+
         const mesa = await prisma.mesa.findUnique({
-            where: { id: mesaId },
+            where: { id: mesa_id },
             include: {
                 reservas: {
                     where: {
@@ -57,7 +64,7 @@ class ReservaController {
                 },
                 mesa: {
                     connect: {
-                        id: mesaId,
+                        id: mesa_id,
                     },
                 },
             },
@@ -80,10 +87,10 @@ class ReservaController {
         try {
             const quantReservas = await prisma.reserva.findMany({
                 where: {
-                    usuarioId: req.usuarioId, // Filtra diretamente pelo ID do usuário
+                    usuarioId: req.usuarioId, 
                 },
                 include: {
-                    mesa: true, // Inclui os dados da mesa associada à reserva
+                    mesa: true,
                 },
             });
 
